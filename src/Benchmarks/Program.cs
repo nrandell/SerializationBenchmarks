@@ -6,7 +6,9 @@ namespace Benchmarks
     {
         static void Main(string[] args)
         {
-            var switcher = new BenchmarkSwitcher(new[] { typeof(ProtobufVsBondVsJsonNetVsJilSerialization), typeof(ProtobufVsBondVsJsonNetVsJilDeserialization) });
+            var switcher = new BenchmarkSwitcher(new[] {
+                typeof(ProtobufVsBondVsJsonNetVsJilSerialization),
+                typeof(ProtobufVsBondVsJsonNetVsJilDeserialization) });
             switcher.Run(args);
         }
     }
