@@ -1,0 +1,9 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+package Benchmarks;
+
+message GooglePerson {
+	string FullName = 1;
+	google.protobuf.Timestamp Birthday = 2;
+	map<string, string> Tags = 3;
+}

@@ -7,7 +7,7 @@ using Bond.IO.Unsafe;
 using Bond.Protocols;
 using Newtonsoft.Json;
 using ProtoBuf;
-
+using Google.Protobuf;
 namespace Benchmarks
 {
     public static class BenchmarksHelper
@@ -39,6 +39,34 @@ namespace Benchmarks
                 return result;
             }
         }
+
+        public static byte[] SerializeGoogleProtobuf(IMessage value)
+        {
+            byte[] buffer = bytePool.Rent(128);
+            using (var stream = new MemoryStream(buffer))
+            {
+                value.WriteTo(stream);
+                var result = new byte[stream.Position];
+                Buffer.BlockCopy(buffer, 0, result, 0, result.Length);
+                bytePool.Return(buffer);
+                return result;
+            }
+        }
+
+        public static byte[] SerializeGoogleProtobufCodedStream(IMessage value)
+        {
+            byte[] buffer = bytePool.Rent(128);
+            using (var stream = new CodedOutputStream(buffer))
+            {
+                value.WriteTo(stream);
+                var result = new byte[stream.Position];
+                Buffer.BlockCopy(buffer, 0, result, 0, result.Length);
+                bytePool.Return(buffer);
+                return result;
+            }
+        }
+
+
 
         public static string SerializeJsonNetBuffers(object value)
         {
@@ -81,5 +109,19 @@ namespace Benchmarks
                 return Serializer.Deserialize<T>(valueBytes);
             }
         }
+
+        public static GooglePerson DeserializeGoogleProtobufByteArray(byte[] value)
+        {
+            return GooglePerson.Parser.ParseFrom(value);
+        }
+
+        public static GooglePerson DeserializeGoogleProtobuf(byte[] value)
+        {
+            using (var valueBytes = new MemoryStream(value))
+            {
+                return GooglePerson.Parser.ParseFrom(valueBytes);
+            }
+        }
+
     }
 }
